@@ -69,6 +69,7 @@ def stopsim
   args = []
   args << "/session="+sim
   args << "/execute=Exit(true)"
+  
   Jake.run2 command, args, {:directory => jde + "/simulator", :nowait => true}
 end
 

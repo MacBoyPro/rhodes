@@ -237,7 +237,13 @@ public class AsyncHttp extends RhoThread
 		    else
 		    {
 		    	m_strResBody += "error&error_code=";
-		    	m_strResBody += RhoRuby.getErrorFromResponse(resp);		    	
+		        /*if ( !resp.isResponseRecieved())
+		            strBody += RhoRuby.ERR_NETWORK;
+		        else */if ( resp.isUnathorized() )
+		        	m_strResBody += RhoRuby.ERR_UNATHORIZED;
+		        else
+		        	m_strResBody += RhoRuby.ERR_REMOTESERVER;
+	
 		        //if ( resp.isResponseRecieved())
 		        m_strResBody += "&http_error=" + resp.getRespCode();
 		    }
@@ -282,7 +288,6 @@ public class AsyncHttp extends RhoThread
 					String url = args.get(0).toStr();
 					String callback = args.get(2).toStr();
 					String callback_params = args.get(3).toStr();
-					boolean ssl_verify_peer = args.get(4).toInt() != 0 ? true : false;
 					AsyncHttp pHttp = new AsyncHttp(new RhoClassFactory(), AsyncHttp.hcGet, url, args.get(1), null, callback, callback_params );
 					return pHttp.getRetValue();
 				} catch(Exception e) {
@@ -304,7 +309,6 @@ public class AsyncHttp extends RhoThread
 					String body = args.get(2).toStr();
 					String callback = args.get(3).toStr();
 					String callback_params = args.get(4).toStr();
-					boolean ssl_verify_peer = args.get(5).toInt() != 0 ? true : false;
 					AsyncHttp pHttp = new AsyncHttp(new RhoClassFactory(), AsyncHttp.hcPost, url, args.get(1), body, callback, callback_params );
 					return pHttp.getRetValue();
 				} catch(Exception e) {
@@ -326,7 +330,6 @@ public class AsyncHttp extends RhoThread
 					String filepath = args.get(2).toStr();
 					String callback = args.get(3).toStr();
 					String callback_params = args.get(4).toStr();
-					boolean ssl_verify_peer = args.get(5).toInt() != 0 ? true : false;
 					AsyncHttp pHttp = new AsyncHttp(new RhoClassFactory(), AsyncHttp.hcDownload, url, args.get(1), filepath, callback, callback_params );
 					return pHttp.getRetValue();
 				} catch(Exception e) {
@@ -348,7 +351,6 @@ public class AsyncHttp extends RhoThread
 					String filepath = args.get(2).toStr();
 					String callback = args.get(3).toStr();
 					String callback_params = args.get(4).toStr();
-					boolean ssl_verify_peer = args.get(5).toInt() != 0 ? true : false;
 					AsyncHttp pHttp = new AsyncHttp(new RhoClassFactory(), AsyncHttp.hcUpload, url, args.get(1), filepath, callback, callback_params );
 					return pHttp.getRetValue();
 				} catch(Exception e) {

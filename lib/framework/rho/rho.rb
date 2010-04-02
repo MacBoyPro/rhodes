@@ -411,13 +411,7 @@ module Rho
   end # RhoConfig
   
     module AsyncHttp
-        def self.ssl_verify_peer(args)
-            ret = args[:ssl_verify_peer]
-            ret = true if !ret.is_a? TrueClass and !ret.is_a? FalseClass
-            ret ? 1 : 0
-        end
-
-	def self.process_result(res, callback)
+        def self.process_result(res, callback)
             return res if callback && callback.length() > 0
             
             _params = ::Rho::RhoSupport::parse_query_parameters res
@@ -427,23 +421,23 @@ module Rho
         
         def self.get(args)
             process_result( 
-                AsyncHttp.do_get(args[:url], args[:headers],
-                    args[:callback], args[:callback_param], ssl_verify_peer(args) ), args[:callback] )
+                AsyncHttp.do_get(args[:url], args[:headers], args[:callback], args[:callback_param] ),
+                args[:callback] )
         end
         def self.post(args)
             process_result( 
-                AsyncHttp.do_post(args[:url], args[:headers], args[:body],
-                    args[:callback], args[:callback_param], ssl_verify_peer(args) ), args[:callback] )
+                AsyncHttp.do_post(args[:url], args[:headers], args[:body], args[:callback], args[:callback_param] ),
+                args[:callback] )
         end
         def self.download_file(args)
             process_result( 
-                AsyncHttp.do_downloadfile(args[:url], args[:headers], args[:filename],
-                    args[:callback], args[:callback_param], ssl_verify_peer(args) ), args[:callback] )
+                AsyncHttp.do_downloadfile(args[:url], args[:headers], args[:filename], args[:callback], args[:callback_param] ),
+                args[:callback] )
         end
         def self.upload_file(args)
             process_result( 
-                AsyncHttp.do_uploadfile(args[:url], args[:headers], args[:filename],
-                    args[:callback], args[:callback_param], ssl_verify_peer(args) ), args[:callback] )
+                AsyncHttp.do_uploadfile(args[:url], args[:headers], args[:filename], args[:callback], args[:callback_param] ),
+                args[:callback] )
         end
     end
   

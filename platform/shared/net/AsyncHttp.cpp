@@ -111,9 +111,8 @@ void CAsyncHttp::run()
     LOG(INFO) + "RhoHttp thread start.";
 
     {		
-        synchronized(m_mxRequest)
+    	synchronized(m_mxRequest)
         m_pNetRequest = m_ptrFactory->createNetRequest();
-        m_pNetRequest->sslVerifyPeer(m_sslVerifyPeer);
     }
 
     switch( m_eCmd )
@@ -136,7 +135,7 @@ void CAsyncHttp::run()
 
     if ( !m_pNetRequest->isCancelled())
     {
-        //processResponse(*m_pNetResponse);
+        //processResponse(m_pNetResponse);
         callNotify(*m_pNetResponse,0);
     }
 
@@ -208,7 +207,13 @@ void CAsyncHttp::callNotify(rho::net::INetResponse& resp, int nError )
         else
         {
     	    m_strResBody += "error&error_code=";
-            m_strResBody += convertToStringA(RhoRuby.getErrorFromResponse(resp));
+            if ( !resp.isResponseRecieved())
+                m_strResBody += convertToStringA(1);//RhoRuby.ERR_NETWORK);
+            else if ( resp.isUnathorized() )
+                m_strResBody += convertToStringA(9);//RhoRuby.ERR_UNATHORIZED);
+            else
+	            m_strResBody += convertToStringA(2);//RhoRuby.ERR_REMOTESERVER);
+
             if ( resp.isResponseRecieved())
 	            m_strResBody += "&http_error=" + convertToStringA(resp.getRespCode());
         }
@@ -241,27 +246,27 @@ extern "C" {
 
 using namespace rho::net;
 
-unsigned long rho_asynchttp_get(const char* url, unsigned long headers, const char* callback, const char* callback_params, int ssl_verify_peer)
+unsigned long rho_asynchttp_get(const char* url, unsigned long headers, const char* callback, const char* callback_params)
 {
-    CAsyncHttp* pHttp = new CAsyncHttp(rho::common::createClassFactory(), CAsyncHttp::hcGet, url, headers, null, callback, callback_params, ssl_verify_peer!=0 );
+    CAsyncHttp* pHttp = new CAsyncHttp(rho::common::createClassFactory(), CAsyncHttp::hcGet, url, headers, null, callback, callback_params );
     return pHttp->getRetValue();
 }
 
-unsigned long rho_asynchttp_post(const char* url, unsigned long headers, const char* body, const char* callback, const char* callback_params, int ssl_verify_peer)
+unsigned long rho_asynchttp_post(const char* url, unsigned long headers, const char* body, const char* callback, const char* callback_params)
 {
-    CAsyncHttp* pHttp = new CAsyncHttp(rho::common::createClassFactory(), CAsyncHttp::hcPost, url, headers, body!=null?body:"", callback, callback_params, ssl_verify_peer!=0 );
+    CAsyncHttp* pHttp = new CAsyncHttp(rho::common::createClassFactory(), CAsyncHttp::hcPost, url, headers, body!=null?body:"", callback, callback_params );
     return pHttp->getRetValue();
 }
 
-unsigned long rho_asynchttp_downloadfile(const char* url, unsigned long headers, const char* file_path, const char* callback, const char* callback_params, int ssl_verify_peer)
+unsigned long rho_asynchttp_downloadfile(const char* url, unsigned long headers, const char* file_path, const char* callback, const char* callback_params)
 {
-    CAsyncHttp* pHttp = new CAsyncHttp(rho::common::createClassFactory(), CAsyncHttp::hcDownload, url, headers, file_path, callback, callback_params, ssl_verify_peer!=0 );
+    CAsyncHttp* pHttp = new CAsyncHttp(rho::common::createClassFactory(), CAsyncHttp::hcDownload, url, headers, file_path, callback, callback_params );
     return pHttp->getRetValue();
 }
 
-unsigned long rho_asynchttp_uploadfile(const char* url, unsigned long headers, const char* file_path, const char* callback, const char* callback_params, int ssl_verify_peer)
+unsigned long rho_asynchttp_uploadfile(const char* url, unsigned long headers, const char* file_path, const char* callback, const char* callback_params)
 {
-    CAsyncHttp* pHttp = new CAsyncHttp(rho::common::createClassFactory(), CAsyncHttp::hcUpload, url, headers, file_path, callback, callback_params, ssl_verify_peer!=0 );
+    CAsyncHttp* pHttp = new CAsyncHttp(rho::common::createClassFactory(), CAsyncHttp::hcUpload, url, headers, file_path, callback, callback_params );
     return pHttp->getRetValue();
 }
 
