@@ -64,7 +64,12 @@ module Rhogen
       template.source = 'app/index.erb'
       template.destination = "#{name}/app/index.erb"
     end
-    
+
+    template :bb_index do |template|
+      template.source = 'app/index.erb.bb'
+      template.destination = "#{name}/app/index.erb.bb"
+    end   
+
     template :layout do |template|
       template.source = 'app/layout.erb'
       template.destination = "#{name}/app/layout.erb"
@@ -149,10 +154,30 @@ module Rhogen
       template.source = 'new.erb'
       template.destination = "app/#{name.camel_case}/new.erb"
     end
-    
+
     template :new do |template|
       template.source = 'show.erb'
       template.destination = "app/#{name.camel_case}/show.erb"
+    end
+    
+    template :bb_index do |template|
+      template.source = 'index.erb.bb'
+      template.destination = "app/#{name.camel_case}/index.erb.bb"
+    end
+
+    template :bb_edit do |template|
+      template.source = 'edit.erb.bb'
+      template.destination = "app/#{name.camel_case}/edit.erb.bb"
+    end
+
+    template :bb_new do |template|
+      template.source = 'new.erb.bb'
+      template.destination = "app/#{name.camel_case}/new.erb.bb"
+    end
+    
+    template :bb_show do |template|
+      template.source = 'show.erb.bb'
+      template.destination = "app/#{name.camel_case}/show.erb.bb"
     end
 
     template :controller do |template|
